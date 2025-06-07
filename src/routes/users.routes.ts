@@ -1,9 +1,10 @@
 import { Router } from "express";
+import * as ctr from "../controllers";
 
 const router = Router();
 
-router.get("/", (_req, res) => {
-  res.json({ msg: "UNDER_DEV" });
-});
+router.get("/", ctr.getAllUsers);
+
+router.post("/", ctr.createUser);
 
 export default router;
