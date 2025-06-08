@@ -3,13 +3,19 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "prisma": {
+    "schema": "src/db/shema.prisma"
+  },
   "scripts": {
-    "dev": "ts-node-dev index.ts"
+    "dev": "ts-node-dev index.ts",
+    "db:migrate": "npx prisma migrate reset && npx prisma migrate dev",
+    "db:studio": "npx prisma studio"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "6.9.0",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.6.1",
     "cors": "^2.8.5",
