@@ -7,6 +7,8 @@ router.get("/", ctr.getAllPlants);
 
 router.post("/", ctr.createPlant);
 
-router.put('/water/:id', ctr.waterPlant);
+router.put("/water/:id", ctr.waterPlant);
+
+router.put("/fertilize/:id", ctr.fertilize);
 
 export default router;
