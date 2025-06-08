@@ -7,4 +7,6 @@ router.get("/", ctr.getAllUsers);
 
 router.post("/", ctr.createUser);
 
+router.delete("/", ctr.deleteUser);
+
 export default router;
