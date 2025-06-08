@@ -25,3 +25,37 @@ export const getAllPlants: AsyncController = async (_req, res, next) => {
     next(error);
   }
 };
+
+export const createPlant: AsyncController = async (req, res, next) => {
+  try {
+    // HARDCODED AUTH SESSION USER ID
+    const HCUser = await prisma.user.findFirst({
+      where: {
+        name: env.HARDCODED_USER_NAME,
+      },
+    });
+
+    const user_id = HCUser?.id;
+
+    if (!user_id) throw new Error("Unauthenticated");
+    //////////////////////////////////
+    const { name, scientific, img, watering, fertilization } = req.body;
+
+    const newPlant = await prisma.plant.create({
+      data: {
+        user_id,
+        name,
+        scientific,
+        watering,
+        fertilization,
+        img,
+      },
+    });
+
+    res
+      .status(201)
+      .json({ message: "Plant successfully created", data: newPlant });
+  } catch (error) {
+    next(error);
+  }
+};

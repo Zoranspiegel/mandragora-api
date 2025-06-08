@@ -68,11 +68,11 @@ model Plant {
   user_id            String
   name               String
   scientific         String
-  img                String
-  watering           Int?
+  img                String?
+  watering           Int
   next_watering      DateTime?
   waterings          DateTime[] @default([])
-  fertilization      Int?
+  fertilization      Int
   next_fertilization DateTime?
   fertilizations     DateTime[] @default([])
 
