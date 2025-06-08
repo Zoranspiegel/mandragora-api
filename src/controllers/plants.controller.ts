@@ -18,9 +18,46 @@ export const getAllPlants: AsyncController = async (_req, res, next) => {
       where: {
         user_id,
       },
+      omit: {
+        user_id: true,
+      },
     });
 
     res.status(200).json(allPlants);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getPlantById: AsyncController = async (req, res, next) => {
+  try {
+    // HARDCODED AUTH SESSION USER ID
+    const HCUser = await prisma.user.findFirst({
+      where: {
+        name: env.HARDCODED_USER_NAME,
+      },
+    });
+
+    const user_id = HCUser?.id;
+    //////////////////////////////////
+    const { id } = req.params;
+
+    const plant = await prisma.plant.findFirst({
+      where: {
+        id,
+        user_id,
+      },
+      omit: {
+        user_id: true,
+      },
+    });
+
+    if (!plant) {
+      res.status(404).json({ error: "Plant not found" });
+      return;
+    }
+
+    res.status(201).json(plant);
   } catch (error) {
     next(error);
   }
@@ -49,6 +86,9 @@ export const createPlant: AsyncController = async (req, res, next) => {
         watering,
         fertilization,
         img,
+      },
+      omit: {
+        user_id: true,
       },
     });
 
@@ -97,6 +137,9 @@ export const waterPlant: AsyncController = async (req, res, next) => {
         id,
         user_id,
       },
+      omit: {
+        user_id: true,
+      },
       data: {
         waterings: newWaterings,
         next_watering,
@@ -111,7 +154,7 @@ export const waterPlant: AsyncController = async (req, res, next) => {
   }
 };
 
-export const fertilize: AsyncController = async (req, res, next) => {
+export const fertilizePlant: AsyncController = async (req, res, next) => {
   try {
     // HARDCODED AUTH SESSION USER ID
     const HCUser = await prisma.user.findFirst({
@@ -148,6 +191,9 @@ export const fertilize: AsyncController = async (req, res, next) => {
         id,
         user_id,
       },
+      omit: {
+        user_id: true,
+      },
       data: {
         fertilizations: newFertilizations,
         next_fertilization,
@@ -157,6 +203,44 @@ export const fertilize: AsyncController = async (req, res, next) => {
     res
       .status(200)
       .json({ message: "Plant successfully fertilized", data: updatedPlant });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deletePlant: AsyncController = async (req, res, next) => {
+  try {
+    // HARDCODED AUTH SESSION USER ID
+    const HCUser = await prisma.user.findFirst({
+      where: {
+        name: env.HARDCODED_USER_NAME,
+      },
+    });
+
+    const user_id = HCUser?.id;
+
+    if (!user_id) throw new Error("Unauthenticated");
+    //////////////////////////////////
+    const { id } = req.body;
+
+    const deletedPlant = await prisma.plant.delete({
+      where: {
+        id,
+        user_id,
+      },
+      omit: {
+        user_id: true,
+      },
+    });
+
+    if (!deletePlant) {
+      res.status(404).json({ error: "Plant not found" });
+      return;
+    }
+
+    res
+      .status(200)
+      .json({ message: "Plant successfully deleted", data: deletedPlant });
   } catch (error) {
     next(error);
   }
